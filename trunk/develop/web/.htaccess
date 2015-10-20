@@ -1,0 +1,17 @@
+allow from all
+#deny from all
+#启用重定向，美化代码  *注意 404也会被重定向！
+#Options +FollowSymLinks
+#IndexIgnore */*
+#RewriteEngine on
+#RewriteCond %{REQUEST_FILENAME} !-f
+#RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteRule . index.php
+
+
+#Options +FollowSymLinks
+#IndexIgnore */*
+#RewriteEngine on
+#RewriteCond %{REQUEST_FILENAME} !-f
+#RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteRule . index.php
