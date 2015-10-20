@@ -1,0 +1,3 @@
+解压缩  vendor.rar 到当前目录
+复制文件夹 vendor 、 web 、 runtime 至开发路径中
+done
