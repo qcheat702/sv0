@@ -81,19 +81,30 @@ class Module extends \yii\base\Module
      */
     public $mainLayout = '@mdm/admin/views/layouts/main.php';
 
+    /**
+     * 配置自定义资源路径
+     * @var string
+     */
+    public $assetUrl = "@web";
+
 
     /**
      * @inheritdoc
      */
     public function init()
     {
+
+
+        parent::init();
+
         /**
          * 权限检查
          */
 
-        if(  !Yii::$app->user->can('admin-rbac') && Yii::$app->user->id != 1  )throw new NotFoundHttpException('没有操作权限.');;
+        if(  !Yii::$app->user->can('admin-rbac') && Yii::$app->user->id != 1  )throw new NotFoundHttpException('没有操作权限.');
 
-        parent::init();
+        //设置资源目录别名
+        Yii::setAlias('@assetUrl', $this->assetUrl);
 
         if (!isset(Yii::$app->i18n->translations['rbac-admin'])) {
             Yii::$app->i18n->translations['rbac-admin'] = [

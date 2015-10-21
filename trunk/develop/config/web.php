@@ -14,7 +14,7 @@ $config = [
         //全局组件别名
         '@sv/components'  => '@app/components',
         '@sv/widgets'  => '@app/widgets',
-    ],
+    ], 
   
     'components' => [
         'request' => [

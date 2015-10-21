@@ -1,11 +1,15 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
+use sv\admin\assets\kindEditor;
 
-/* @var $this yii\web\View */
-/* @var $model sv\admin\models\Posts */
-/* @var $form yii\widgets\ActiveForm */
+use sv\admin\models\users;
+
+kindEditor::register($this);
+$this->registerJs('ready();');
+$users = users::find()->asArray()->all();
 ?>
 
 <?=sv\admin\PostWidget::Widget();?>
@@ -20,45 +24,27 @@ use yii\widgets\ActiveForm;
     <!-- 摘要 -->
     <?= $form->field($model, 'post_excerpt')->textarea(['rows' => 6]) ?>
     <!-- 作者 -->
-    <?= $form->field($model, 'post_author')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'post_date')->textInput() ?>
-
-    <?= $form->field($model, 'post_date_gmt')->textInput() ?>
+    <?= $form->field($model, 'post_author')->dropdownList(ArrayHelper::map($users, 'ID', 'display_name')) ?>
 
 
 
-    
-
-    <?= $form->field($model, 'post_status')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'comment_status')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'ping_status')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'post_password')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'post_name')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'to_ping')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'pinged')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'post_modified')->textInput() ?>
-
-    <?= $form->field($model, 'post_modified_gmt')->textInput() ?>
-
-    <?= $form->field($model, 'post_content_filtered')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'post_parent')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'guid')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'menu_order')->textInput() ?>
-
-    <?= $form->field($model, 'post_type')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'comment_count')->textInput() ?>
+    <?= $form->field($model, 'post_status')->dropdownList([
+        'publish'=>'已发表',
+        'draft'=>'草稿',
+        'private'=>'私人'
+    ]) ?>
+   
+    <?= $form->field($model, 'comment_status')->dropdownList([
+        'open'=>'允许评论',
+        'closed'=>'不允许评论',
+        'registered_only'=>'只有注册用户可以评论'
+    ]) ?>
+    <!-- ping状态 open指打开pingback功能，closed为关闭 -->
+    <?= $form->field($model, 'ping_status')->dropdownList([
+        'open'=>'允许ping',
+        'closed'=>'关闭ping'
+    ]) ?>
+  
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
@@ -67,3 +53,15 @@ use yii\widgets\ActiveForm;
     <?php ActiveForm::end(); ?>
 
 </div>
+
+<script>
+ready = function(){
+    KindEditor.ready(function(K) {
+        window.editor = K.create('#posts-post_content',{
+            height : '400px',
+            allowFileManager : true
+        });
+    });
+}
+</script>
+

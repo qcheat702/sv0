@@ -68,7 +68,7 @@ class Posts extends \yii\db\ActiveRecord
             'post_content' => '内容',
             'post_title' => '标题',
             'post_excerpt' => '摘要',
-            'post_status' => '转台',
+            'post_status' => '状态',
             'comment_status' => '评论状态',
             'ping_status' => 'Ping',
             'post_password' => '怒那',
