@@ -9,7 +9,14 @@ use sv\admin\models\users;
 
 kindEditor::register($this);
 $this->registerJs('ready();');
-$users = users::find()->asArray()->all();
+$authors = users::find()->asArray()->all();
+// var_dump($model->metas);
+
+// var_dump($model->getMetas("article_category"));
+// var_dump($model->article_category);
+$model->setMeta('article_category3','xxx');
+
+
 ?>
 
 <?=sv\admin\PostWidget::Widget();?>
@@ -24,7 +31,7 @@ $users = users::find()->asArray()->all();
     <!-- 摘要 -->
     <?= $form->field($model, 'post_excerpt')->textarea(['rows' => 6]) ?>
     <!-- 作者 -->
-    <?= $form->field($model, 'post_author')->dropdownList(ArrayHelper::map($users, 'ID', 'display_name')) ?>
+    <?= $form->field($model, 'post_author')->dropdownList(ArrayHelper::map($authors, 'ID', 'display_name')) ?>
 
 
 

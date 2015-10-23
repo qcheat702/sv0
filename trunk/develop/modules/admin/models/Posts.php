@@ -32,6 +32,7 @@ use Yii;
  */
 class Posts extends \yii\db\ActiveRecord
 {
+    public $_metas = null;
     /**
      * @inheritdoc
      */
@@ -55,38 +56,118 @@ class Posts extends \yii\db\ActiveRecord
         ];
     }
 
+
     /**
      * @inheritdoc
      */
     public function attributeLabels()
     {
         return [
-            'ID' => 'ID',
-            'post_author' => '作者',
-            'post_date' => '日期',
-            'post_date_gmt' => '创建日期Gmt',
-            'post_content' => '内容',
-            'post_title' => '标题',
-            'post_excerpt' => '摘要',
-            'post_status' => '状态',
-            'comment_status' => '评论状态',
-            'ping_status' => 'Ping',
-            'post_password' => '怒那',
-            'post_name' => 'Post Name',
-            'to_ping' => 'To Ping',
-            'pinged' => 'Pinged',
-            'post_modified' => '最后修改时间',
-            'post_modified_gmt' => '最后修改时间Gmt',
+            'ID'                    => 'ID',
+            'post_author'           => '作者',
+            'post_date'             => '日期',
+            'post_date_gmt'         => '创建日期Gmt',
+            'post_content'          => '内容',
+            'post_title'            => '标题',
+            'post_excerpt'          => '摘要',
+            'post_status'           => '状态',
+            'comment_status'        => '评论状态',
+            'ping_status'           => 'Ping',
+            'post_password'         => '文章密码',
+            'post_name'             => 'Post Name',
+            'to_ping'               => 'To Ping',
+            'pinged'                => 'Pinged',
+            'post_modified'         => '最后修改时间',
+            'post_modified_gmt'     => '最后修改时间Gmt',
             'post_content_filtered' => 'Post Content Filtered',
-            'post_parent' => 'Post Parent',
-            'guid' => 'Guid',
-            'menu_order' => 'Menu Order',
-            'post_type' => 'Post Type',
-            'comment_count' => '评论计数',
+            'post_parent'           => 'Post Parent',
+            'guid'                  => 'Guid',
+            'menu_order'            => 'Menu Order',
+            'post_type'             => 'Post Type',
+            'comment_count'         => '评论计数',
         ];
     }
 
-    public function getMeta(){
-        return $this->hasMany(Postmeta::className(), ['ID' => 'post_id']);
+    /**
+     * 批量设置元数据
+     * @param string/array $options 元数据键值或键值对序列
+     * @param mixed $value  元数据值，当参数$options为字符串时生效
+     */
+    public function setMatas($options,$value=null)
+    {
+        if(  is_string($options) )
+            $this->setMeta($options,$value);
+
+        if(  is_array($options)  )
+            foreach ($options as $key => $value)
+                $this->setMeta($key,$value);
+    }
+
+    /**
+     * 设置元数据
+     * @param string $key   元数据键值
+     * @param mixed $value 元数据值
+     * @return  true/false 设置成功或者失败
+     */
+    public function setMeta($key,$value)
+    {
+        $meta = $this->getMetas($key);
+
+        if(  is_null($meta)  ){            
+            $meta = new Postmeta();
+            if(  is_null($meta->getMeta($key))  ){
+                //errors：无效的元数据键值
+                return false;
+            }
+            $meta->post_id = $this->ID;
+            $meta->meta_key = $key;
+        }
+
+        $meta->meta_value = $value;
+
+        if(  !$meta->save()  ){
+            //errors：保存到元数据表出错
+            return false;
+        }
+        return true ;            
+    }
+
+
+    /**
+     * 获取指定的元数据
+     * @param  mixed[string/array] $metas 元数据键值或者键值序列
+     * @return array/null        元数据AR对象或AR对象序列
+     */
+    public function getMetas($metas){
+
+        if(  $this->getIsNewRecord()  )return null;
+
+        // var_dump($this->ID);
+        // die();
+
+        if(  is_null($this->_metas)  )
+             $this->_metas = Postmeta::find()->where(['post_id'=>$this->ID])->all();
+
+        if(  empty($this->_metas)  )return null;
+
+        if(  is_string($metas)  ){
+            foreach ($this->_metas as $key => $meta)
+                if(  $meta->meta_key ==  $metas )return $meta;
+
+            // var_dump($this->_metas);
+
+            return null;
+        }            
+
+        if(  is_array($metas)  ){
+            $_arr = null;
+            foreach ($metas as $key => $meta)
+                foreach ($this->_metas as $key => $_meta) 
+                    if(  $meta == $_meta  )
+                        $_arr[] = $_meta;
+            return $_arr;
+        }
+        
+        return null;
     }
 }

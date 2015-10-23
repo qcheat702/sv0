@@ -9,6 +9,10 @@ $config =  [
     'baseUrl'         => '@web/styles',//静态资源基础目录
     'defaultTemplate' => 'default',//默认模板（放置可重用资源极或者系统资源，请勿更改！）
 
+    // 'data-meta'        =>[
+    //     'post' =>   []
+    // ]
+
 ];
 
 //默认静态资源路径

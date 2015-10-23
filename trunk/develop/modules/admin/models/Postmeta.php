@@ -14,17 +14,9 @@ use Yii;
  */
 class Postmeta extends \yii\db\ActiveRecord
 {
-    /**
-     * @inheritdoc
-     */
-    public static function tableName()
-    {
-        return '{{%postmeta}}';
-    }
 
-    /**
-     * @inheritdoc
-     */
+    public static function tableName(){return '{{%postmeta}}';}
+
     public function rules()
     {
         return [
@@ -34,9 +26,6 @@ class Postmeta extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function attributeLabels()
     {
         return [
@@ -45,5 +34,112 @@ class Postmeta extends \yii\db\ActiveRecord
             'meta_key' => 'Meta Key',
             'meta_value' => 'Meta Value',
         ];
+    }
+
+    //元数据规则
+    public function metaRules()
+    {
+        return [
+            [['article_category'], 'safe'],
+        ];
+    }
+    //元数据标签
+    public function metaLabels()
+    {
+        return [
+            'article_category' => '文章类别',
+        ];
+    }
+
+    /**
+     * 获取元数据
+     * @param  mixed[string/array] $metas 元数据键值/元数据键值序列
+     * @return array/null        参数为字符串返回单一元数据/参数为元数据键值序列时返回以元数据键值为键值的元数据序列
+    */
+    public function getMetas($metas)
+    {
+        if(  empty($metas)  ) return null;
+        //如果元数据键值是字符串
+        if (  is_string($metas)  )
+            return $this->getMeta($metas);
+        //如果元数据键值是数组序列
+        if(  is_array($metas)  )
+        {
+            $_arr = null;
+            foreach ($metas as $km => $meta)
+            {
+                $_mata = $this->getMeta($meta);
+                if(  !is_null($_mata)  )
+                    $_arr[$meta] = $this->getMeta($meta);
+            }
+            return $_arr;
+        }
+
+        return null;
+    }
+    
+    /**
+     * 获取单个元数据
+     * @param  string $meta 元数据键值
+     * @return array/null   获取元数据
+     */
+    public function getMeta($meta)
+    {
+        $rules = $this->getMetaRules($meta);
+
+        if(  is_null($rules)  )return null;
+
+        return 
+        [
+            'key' => $meta,
+            'label' => $this->getMataLabels($meta),
+            'rules' => $rules
+        ];
+    }
+
+
+    //获取元数据规则
+    public function getMetaRules($meta)
+    {
+        $metarules = null;
+        foreach ($this->metaRules() as $kr => $vr) 
+        {
+            foreach ($vr[0] as $km => $vm)
+                if(  $meta == $vm  )
+                    $metarules[$vr[1]][] = isset($vr[2])?$vr[2]:true;
+        }
+        // var_dump($metarules);
+        return $metarules;
+        //？？
+    }
+
+
+
+    /**
+     * 获取元数据标签
+     * @param  mixed[string/array] $metas 元数据键值
+     * @return mixed[string/array/null]        对应的元数据标签。元数据为字符串，返回其标签字符串，未定义标签则返回其本身；元数据为数组，则返回以其自身为键值的元数据标签序列
+     */
+    public function getMataLabels($metas)
+    {
+
+        if(  empty($metas)  )return null;
+
+        //获取所有的元数据标签
+        $metaLabels = $this->metaLabels();
+        //如果参数是字符串
+        if(  is_string($metas)  )
+            return isset($metaLabels[$metas])?$metaLabels[$metas]:$metas;
+
+        //如果参数是数组
+        if(  is_array($metas)  )
+        {
+            $_arr = [];
+            foreach ($metas as $key => $value)
+                $_arr[$value] = isset($metaLabels[$metas])?$metaLabels[$metas]:$metas;            
+            return $_arr;
+        }
+
+        return null;
     }
 }
