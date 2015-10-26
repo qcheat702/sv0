@@ -2,7 +2,9 @@
 
 namespace sv\admin\models;
 
+
 use Yii;
+use yii\base\ErrorException;
 
 /**
  * This is the model class for table "{{%postmeta}}".
@@ -98,26 +100,30 @@ class Postmeta extends \yii\db\ActiveRecord
     }
 
 
-    //获取元数据规则
-    public function getMetaRules($meta)
+    /**
+     * 获取元数据规则
+     * @param  string $meta_key 元数据键值
+     * @return array/null 元数据规则数组,无效的键值会抛出错误
+     */
+    public function getMetaRules($meta_key)
     {
         $metarules = null;
         foreach ($this->metaRules() as $kr => $vr) 
         {
             foreach ($vr[0] as $km => $vm)
-                if(  $meta == $vm  )
+                if(  $meta_key == $vm  )
                     $metarules[$vr[1]][] = isset($vr[2])?$vr[2]:true;
         }
-        // var_dump($metarules);
+
+        if(  is_null($metarules)  )throw new ErrorException('无效的元数据键值:['.$meta_key.']'); 
         return $metarules;
-        //？？
     }
 
 
 
     /**
      * 获取元数据标签
-     * @param  mixed[string/array] $metas 元数据键值
+     * @param  mixed[string/array] $metas 元数据键值或键值序列
      * @return mixed[string/array/null]        对应的元数据标签。元数据为字符串，返回其标签字符串，未定义标签则返回其本身；元数据为数组，则返回以其自身为键值的元数据标签序列
      */
     public function getMataLabels($metas)
@@ -134,12 +140,32 @@ class Postmeta extends \yii\db\ActiveRecord
         //如果参数是数组
         if(  is_array($metas)  )
         {
-            $_arr = [];
+            $_arr = null;
             foreach ($metas as $key => $value)
                 $_arr[$value] = isset($metaLabels[$metas])?$metaLabels[$metas]:$metas;            
             return $_arr;
         }
 
         return null;
+    }
+
+    /**
+     * 元数据值编码
+     * @param  mixed $data 数据
+     * @return string  编码后的元数据值
+     */
+    public function encodeMetaValue($data)
+    {
+        return serialize($data);
+    }
+
+     /**
+     * 元数据值解码
+     * @param  string $data 数据
+     * @return mixed  解码后的元数据值
+     */
+    public function decodeMetaValue($string)
+    {
+        return @unserialize($string);
     }
 }

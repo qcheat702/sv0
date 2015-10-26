@@ -12,11 +12,10 @@ $this->registerJs('ready();');
 $authors = users::find()->asArray()->all();
 // var_dump($model->metas);
 
-// var_dump($model->getMetas("article_category"));
 // var_dump($model->article_category);
-$model->setMeta('article_category3','xxx');
 
-
+// $model->meta('article_category',['1','3','1322']);
+// var_dump($model->meta("article_category"));
 ?>
 
 <?=sv\admin\PostWidget::Widget();?>

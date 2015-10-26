@@ -3,6 +3,7 @@
 namespace sv\admin\models;
 
 use Yii;
+use yii\base\ErrorException;
 
 /**
  * This is the model class for table "{{%posts}}".
@@ -89,44 +90,78 @@ class Posts extends \yii\db\ActiveRecord
     }
 
     /**
+     * 获取/设置 元数据
+     * @param  string/array $options 元数据键值/元数据键值对序列
+     *                               options为字符串，不设置$value，则返回值
+     *                               options为字符串，设置$value，则设置值
+     *                               options键值对序列，按序列则设置值
+     * @param  mixed/null $value 值
+     * @param  Boolean $encode 是否编码，默认true
+     * @return [type]        [description]
+     */
+    public function meta($options,$value=null,$encode=true)
+    {
+
+        if(  is_string($options)  )
+        {
+            if(  is_null($value)  )
+            {
+                $meta = $this->getMetas($options,$encode);
+                if(  is_null($meta)  )return null;
+                if ($encode) return $meta->meta_value;
+                else return $meta->meta_value;    
+            }else
+                $this->setMatas($options,$value,$encode);
+            
+        }
+
+        if(  is_array($options)  )
+            $this->setMatas($options,null,$encode);
+    }
+
+    /**
      * 批量设置元数据
      * @param string/array $options 元数据键值或键值对序列
      * @param mixed $value  元数据值，当参数$options为字符串时生效
+     * @param boolean $encode  是否编码，默认true
      */
-    public function setMatas($options,$value=null)
+    public function setMatas($options,$value=null,$encode=true)
     {
         if(  is_string($options) )
-            $this->setMeta($options,$value);
+            $this->setMeta($options,$value,$encode);
 
         if(  is_array($options)  )
-            foreach ($options as $key => $value)
-                $this->setMeta($key,$value);
+            foreach ($options as $key => $option)
+                $this->setMeta($key,$option,$encode);
     }
 
     /**
      * 设置元数据
      * @param string $key   元数据键值
      * @param mixed $value 元数据值
+     * @param boolean $encode 是否编码，默认true
      * @return  true/false 设置成功或者失败
      */
-    public function setMeta($key,$value)
+    public function setMeta($key,$value,$encode=true)
     {
+        if(  empty($this->ID)  )return false;
+
         $meta = $this->getMetas($key);
 
         if(  is_null($meta)  ){            
             $meta = new Postmeta();
-            if(  is_null($meta->getMeta($key))  ){
-                //errors：无效的元数据键值
+            if(  is_null($meta->getMeta($key,$encode))  ){                
                 return false;
             }
             $meta->post_id = $this->ID;
             $meta->meta_key = $key;
         }
-
-        $meta->meta_value = $value;
+  
+        $meta->meta_value = ($encode?$meta->encodeMetaValue($value):$value);
 
         if(  !$meta->save()  ){
             //errors：保存到元数据表出错
+            throw new ErrorException('保存到元数据表'.$meta->tableName().'出错'); 
             return false;
         }
         return true ;            
@@ -136,14 +171,12 @@ class Posts extends \yii\db\ActiveRecord
     /**
      * 获取指定的元数据
      * @param  mixed[string/array] $metas 元数据键值或者键值序列
+     * @param boolean $decode 是否解编码，默认true
      * @return array/null        元数据AR对象或AR对象序列
      */
-    public function getMetas($metas){
+    public function getMetas($metas,$decode=true){
 
         if(  $this->getIsNewRecord()  )return null;
-
-        // var_dump($this->ID);
-        // die();
 
         if(  is_null($this->_metas)  )
              $this->_metas = Postmeta::find()->where(['post_id'=>$this->ID])->all();
@@ -152,10 +185,11 @@ class Posts extends \yii\db\ActiveRecord
 
         if(  is_string($metas)  ){
             foreach ($this->_metas as $key => $meta)
-                if(  $meta->meta_key ==  $metas )return $meta;
-
-            // var_dump($this->_metas);
-
+                if(  $meta->meta_key ==  $metas )
+                {
+                    $meta->meta_value = ($decode?$meta->decodeMetaValue($meta->meta_value):$meta->meta_value);
+                    return $meta;
+                }
             return null;
         }            
 
@@ -164,10 +198,13 @@ class Posts extends \yii\db\ActiveRecord
             foreach ($metas as $key => $meta)
                 foreach ($this->_metas as $key => $_meta) 
                     if(  $meta == $_meta  )
+                    {
+                        $_meta->meta_value = ($decode?$meta->decodeMetaValue($_meta->meta_value):$_meta->meta_value);
                         $_arr[] = $_meta;
+                    }
+                        
             return $_arr;
-        }
-        
+        }        
         return null;
     }
 }
