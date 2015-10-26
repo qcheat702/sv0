@@ -53,6 +53,14 @@ $config = [
         'authManager' => [  
             'class' => 'yii\rbac\DbManager',
         ],
+        //公共函数
+        'fun' => [
+            'class' => 'app\components\Fun'
+        ],
+        //系统配置
+        'sys' => [
+            'class' => 'app\components\Sys'
+        ]
 
     ],
     'params' => $params,

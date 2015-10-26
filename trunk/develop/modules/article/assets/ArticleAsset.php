@@ -9,7 +9,7 @@ class ArticleAsset extends AssetBundle
     public $baseUrl = '@assetUrl';
     //需要引入的JS
     public $js = [
-        // 'lib/responsive-nav/responsive-nav.min.js',
+        'js/gravatar.js',
        
     ];
     //需要引入的CSS

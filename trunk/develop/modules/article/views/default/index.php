@@ -1,7 +1,10 @@
+<?php 
+// var_dump(yii::$app->fun->isMobile('13988811111'));
+?>
 <div class="article-default-index">
     <div class="container">
         <!-- 文章列表 -->
-        <div class="articles-default col-sm-12 col-md-9">
+        <div class="articles-default <?=yii::$app->sys->useWidget?'col-sm-12 col-md-9':'' ?>">
             <?php foreach ($posts as $kp => $post): ?>    
             <div class="panel panel-default">
                 <div class="panel-body">
@@ -14,10 +17,9 @@
                         <!-- 标题-->
                         <div class="title"><?=$post['post_title']?></div>
                         <!-- 横幅广告 -->
-                        <div class="banner">
-                            <img src="" alt="banner" width="100%" height="120" class="img-rounded">
-                        </div>
-                        
+                        <!-- <div class="banner">
+                            <img src="/upload/image/20151026/20151026165551_15526.jpg" alt="banner" width="100%" height="120" class="img-rounded">
+                        </div>    -->                     
                         <!-- 摘要 -->
                         <div class="excerpt"><?=$post['post_content']?></div>
                         <!-- 正文 -->
@@ -29,16 +31,35 @@
                      */
                     -->
                     <div class="comments-default">
+                        
+                        <!-- 添加评论 -->
+                        <div class='comment-new'>
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-xs-3 col-sm-2">
+                                            <img src="" alt="头像" class="avatar img-rounded" data-gravatar-email="qcheat702@163.com">
+                                        </div> 
+                                        <div class="col-xs-9 col-sm-10">
+                                            <textarea name="" id="" class="form-control"></textarea>
+                                            <button class="btn btn-primary">确定</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
                         <!-- 评论循环开始 -->
                         <div class="comment">
                             <div class="panel panel-default">
                                 <div class="panel-body">
                                     <div class="row">
-                                        <div class="col-xs-2">
-                                            <img src="" alt="头像" class="avatar img-rounded">
+                                        <div class="col-xs-3 col-sm-2">
+                                            <img src="" alt="头像" class="avatar img-rounded" data-gravatar-email="qcheat702@163.com">
                                         </div>
-                                        <div class="col-xs-10">
-                                            这是评论正文
+                                        <div class="col-xs-9 col-sm-10">
+                                            评论详情
                                         </div>
                                     </div>
                                     <div class="row">
@@ -84,11 +105,13 @@
 
 
         <!-- 小组件 -->
+        <?php if(  yii::$app->sys->useWidget  ): ?>
         <div class="col-sm-12 col-md-3">
             <div class="panel panel-default">
                 <div class="panel-body">小组件</div>
             </div>
         </div>
+        <?php endif;?>
 
     </div>
     <!-- 文章列表分页 -->

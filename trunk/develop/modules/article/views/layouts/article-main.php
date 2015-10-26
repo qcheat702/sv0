@@ -18,7 +18,7 @@ $this->beginPage() ?>
 </head>
 <body>
 <?php $this->beginBody() ?>
-
+<header></header>
 <?=$content?>    
 
 <?php $this->endBody() ?>
