@@ -89,3 +89,15 @@ a.desc:after {
     padding: 10px 20px;
     margin: 0 0 15px 0;
 }
+
+/*文章-首页*/
+.article-default-index>.container{}
+/*文章列表 默认样式，显示内容*/
+.articles-default{}
+/*文章列表 正文*/
+.articles-default .article{}
+.articles-default .article .title{font-size: 18px;}
+/*评论*/
+.comments-default .avatar{width:64px; height:64px;}
+
+

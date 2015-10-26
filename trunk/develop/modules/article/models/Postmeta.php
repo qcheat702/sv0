@@ -1,6 +1,6 @@
 <?php
 
-namespace sv\admin\models;
+namespace sv\article\models;
 
 
 use Yii;

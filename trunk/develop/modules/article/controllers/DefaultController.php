@@ -1,13 +1,18 @@
 <?php
 
-namespace app\modules\article\controllers;
+namespace sv\article\controllers;
 
 use yii\web\Controller;
+use sv\article\models\Posts;
+// use sv\article\models\Post;
 
 class DefaultController extends Controller
 {
     public function actionIndex()
     {
-        return $this->render('index');
+        $posts = Posts::find()->all();
+        return $this->render('index',[
+            'posts' => $posts,
+        ]);
     }
 }

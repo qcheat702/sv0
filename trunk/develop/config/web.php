@@ -89,9 +89,10 @@ $config['components']['assetManager']['bundles'] = [
  * 加载模块
  */
 // 加载文章模块
+$config['aliases']['@sv/article']  = '@app/modules/article';
 $config['modules']['article']    = [
-    'class' => 'app\modules\article\Module',
-
+    'class' => 'sv\article\Module',
+    'assetUrl' =>  $config['params']['assetUrl']
     ];
 // 加载管理模块
 $config['aliases']['@sv/admin']  = '@app/modules/admin';

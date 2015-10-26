@@ -14,8 +14,9 @@ $authors = users::find()->asArray()->all();
 
 // var_dump($model->article_category);
 
-// $model->meta('article_category',['1','3','1322']);
+// $model->meta('article_category',['3']);
 // var_dump($model->meta("article_category"));
+// var_dump($model->getMataLabels());
 ?>
 
 <?=sv\admin\PostWidget::Widget();?>

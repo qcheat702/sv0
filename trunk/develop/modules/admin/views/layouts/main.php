@@ -12,6 +12,7 @@ $_menu = [
     [  'label' => '用户' , 'url' => ['/admin/users'],  ],
     [  'label' => '文章' , 'url' => ['/admin/posts'],  ],
     [  'label' => 'RBAC' , 'url' => ['/rbac'],  ],
+    [  'label' => '修改密码' , 'url' => ['/admin/change-my-password/update'],  ],
     // [  'label' => '学校' , 'url'=> ['school/index'],  ],
     // [  'label' => '门店' , 'url'=> ['store/index'], 'rule' => 'admin-store' ],
     // [  

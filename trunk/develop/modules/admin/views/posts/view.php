@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'post_author',
             'post_date',
             'post_date_gmt',
-            'post_content:ntext',
+            // 'post_content:ntext',
             'post_title:ntext',
             'post_excerpt:ntext',
             'post_status',

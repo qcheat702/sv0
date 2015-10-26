@@ -98,8 +98,9 @@ class UsersController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        $model = $this->findModel($id);
+        $model->user_status = 0;
+        $model->save();
         return $this->redirect(['index']);
     }
 
@@ -112,7 +113,7 @@ class UsersController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Users::findOne($id)) !== null) {
+        if (($model = Users::findOne(['ID'=>$id,'user_status'=>1])) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
